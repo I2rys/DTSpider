@@ -10,8 +10,8 @@ const Self_Args = process.argv.slice(2)
 
 const User = new Discord.Client()
 
-var DTSpider_Data = {}
-DTSpider_Data.results = ""
+var Self = {}
+Self.results = ""
 
 //Functions
 function Main(){
@@ -25,7 +25,6 @@ function Main(){
         }, function(err, res, body){
             if(err){
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Unable to request to Discord API, please try again later.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
                 process.exit()
             }
 
@@ -34,15 +33,14 @@ function Main(){
                 body = JSON_Hood.getJSONasArrowDiagram(body)
 
                 console.log(body)
-                DTSpider_Data.results += `\n\n`
-                DTSpider_Data.results += "\n--------------- Discord user information ---------------"
-                DTSpider_Data.results += body
+                Self.results += `\n\n`
+                Self.results += "\n--------------- Discord user information ---------------"
+                Self.results += body
 
                 Guilds()
                 return
             }else{
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Something went wrong with the Discord API response, the token must be invalid.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
                 process.exit()
             }
         })
@@ -57,7 +55,6 @@ function Main(){
         }, function(err, res, body){
             if(err){
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Unable to request to Discord API, please try again later.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
                 process.exit()
             }
 
@@ -66,14 +63,14 @@ function Main(){
                 body = JSON_Hood.getJSONasArrowDiagram(body)
 
                 console.log(body)
-                DTSpider_Data.results += `\n\n`
-                DTSpider_Data.results += "\n--------------- Discord user guilds ---------------"
-                DTSpider_Data.results += body
+                Self.results += `\n\n`
+                Self.results += "\n--------------- Discord user guilds ---------------"
+                Self.results += body
 
                 Subscriptions()
             }else{
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Something went wrong with the Discord API response, the token must be invalid.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
+
                 process.exit()
             }
         })
@@ -89,7 +86,6 @@ function Main(){
         }, function(err, res, body){
             if(err){
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Unable to request to Discord API, please try again later.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
                 process.exit()
             }
 
@@ -102,9 +98,9 @@ function Main(){
                 body = JSON_Hood.getJSONasArrowDiagram(body)
 
                 console.log(body)
-                DTSpider_Data.results += `\n\n`
-                DTSpider_Data.results += "\n--------------- Discord user subscriptions ---------------"
-                DTSpider_Data.results += body
+                Self.results += `\n\n`
+                Self.results += "\n--------------- Discord user subscriptions ---------------"
+                Self.results += body
 
                 Others()
             }
@@ -121,7 +117,6 @@ function Main(){
         }, function(err, res, body){
             if(err){
                 I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Unable to request to Discord API, please try again later.")
-                I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
                 process.exit()
             }
 
@@ -134,9 +129,9 @@ function Main(){
                 body = JSON_Hood.getJSONasArrowDiagram(body)
 
                 console.log(body)
-                DTSpider_Data.results += `\n\n`
-                DTSpider_Data.results += "\n--------------- Discord user other information ---------------"
-                DTSpider_Data.results += body
+                Self.results += `\n\n`
+                Self.results += "\n--------------- Discord user other information ---------------"
+                Self.results += body
 
                 Done()
             }
@@ -145,44 +140,42 @@ function Main(){
 
     function Done(){
         I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Saving the results on the output you specified.")
-        Fs.writeFileSync(Self_Args[1], DTSpider_Data.results, "utf8")
+        Fs.writeFileSync(Self_Args[1], Self.results, "utf8")
         I2rys.log("yellowish", "INFO", "DTSpider Debugger:", `The results have been saved to ${Self_Args[1]}`)
         process.exit()
     }
 }
 
 //Main
-if(Self_Args.length == 0){
+if(!Self_Args.length){
     console.log(`node index.js <discord_token> <output>
 Example: node index.js yourdiscordtokenhere ./output_test.txt`)
     process.exit()
 }
 
-if(Self_Args[0] == ""){
+if(!Self_Args[0]){
     I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "discord_token is invalid.")
-    I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
     process.exit()
 }
 
-if(Self_Args[1] == ""){
+if(!Self_Args[1]){
     I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "output is invalid.")
-    I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
     process.exit()
 }
 
 User.on("ready", ()=>{
     I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Grabbing the Discord token extra AIO information, please wait.")
     I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "The information won't be displayed because It's too big maybe.")
-    DTSpider_Data.results = "--------------- Discord user extra information ---------------"
-    DTSpider_Data.results += `\nAvatar: ${User.user.avatar}`
-    DTSpider_Data.results += `\nBot: ${User.user.bot}`
-    DTSpider_Data.results += `\nCreated At: ${User.user.createdAt}`
-    DTSpider_Data.results += `\nCreated timestamp: ${User.user.createdTimestamp}`
-    DTSpider_Data.results += `\nDiscriminator: ${User.user.discriminator}`
-    DTSpider_Data.results += `\nFlags: ${User.user.flags}`
-    DTSpider_Data.results += `\nID: ${User.user.id}`
-    DTSpider_Data.results += `\nSystem: ${User.user.system}`
-    DTSpider_Data.results += `\nTag: ${User.user.tag}`
+    Self.results = "--------------- Discord user extra information ---------------"
+    Self.results += `\nAvatar: ${User.user.avatar}`
+    Self.results += `\nBot: ${User.user.bot}`
+    Self.results += `\nCreated At: ${User.user.createdAt}`
+    Self.results += `\nCreated timestamp: ${User.user.createdTimestamp}`
+    Self.results += `\nDiscriminator: ${User.user.discriminator}`
+    Self.results += `\nFlags: ${User.user.flags}`
+    Self.results += `\nID: ${User.user.id}`
+    Self.results += `\nSystem: ${User.user.system}`
+    Self.results += `\nTag: ${User.user.tag}`
 
     var guilds = []
 
@@ -190,12 +183,11 @@ User.on("ready", ()=>{
         guilds.push(guild.name)
     })
 
-    DTSpider_Data.results += `\nGuilds: ${guilds}`
+    Self.results += `\nGuilds: ${guilds}`
     Main()
 })
 
 User.login(Self_Args[0]).catch(()=>{
-    I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Something went wrong with the Discord API response, the token must be invalid.")
-    I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "Exiting...")
+    I2rys.log("yellowish", "INFO", "DTSpider Debugger:", "The Discord token is invalid.")
     process.exit()
 })
